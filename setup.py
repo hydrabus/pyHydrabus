@@ -34,7 +34,7 @@ setuptools.setup(
     description="Hydrabus BBIO python bindings",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/hydrabus/hydrafw",
+    url="https://github.com/hydrabus/pyhydrabus",
     packages=setuptools.find_packages(),
     install_requires=['pyserial'],
     classifiers=[
