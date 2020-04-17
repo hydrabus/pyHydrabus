@@ -16,6 +16,7 @@ import time
 import logging
 
 import serial
+import serial.tools.list_ports
 
 
 class Hydrabus:
@@ -29,10 +30,18 @@ class Hydrabus:
         """
         Class init
 
-        :param port: Serial port to use
+        :param port: Serial port to use. Will automatically be probed if absent
         """
-        self.port = port
         self._logger = logging.getLogger(__name__)
+
+
+        if port == "":
+            for port in serial.tools.list_ports.comports():
+                if "HydraBus" in port.description:
+                    self.port = port.device
+                    self._logger.info(f"Autodetected Hydrabus on {self.port}")
+        else:
+            self.port = port
 
         try:
             self._serialport = serial.Serial(self.port, timeout=None)
