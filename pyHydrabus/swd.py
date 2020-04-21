@@ -16,7 +16,7 @@ import logging
 from .rawwire import RawWire
 
 
-class SWD:
+class SWD(RawWire):
     """
     SWD protocol handler
 
@@ -32,13 +32,10 @@ class SWD:
     """
 
     def __init__(self, port=""):
-        self._interface = RawWire(port)
+        super().__init__(port)
 
-        self._interface._config = 0xA
-        self._interface._configure_port()
-
-    def __del__(self):
-        self.close()
+        self._config = 0xA
+        self._configure_port()
 
     def _apply_dp_parity(self, value):
         tmp = value & 0b00011110
@@ -46,18 +43,15 @@ class SWD:
             value = value | 1 << 5
         return value
 
-    def close(self):
-        self._interface.close()
-
     def _sync(self):
-        self._interface.write(b"\x00")
+        self.write(b"\x00")
 
     def bus_init(self):
         """
         Initiate SWD bus.
         Sends the JTAG-TO-SWD token and sync clocks
         """
-        self._interface.write(
+        self.write(
             b"\xff\xff\xff\xff\xff\xff\x7b\x9e\xff\xff\xff\xff\xff\xff\x0f"
         )
         self._sync()
@@ -81,12 +75,12 @@ class SWD:
         CMD = CMD | (addr & 0b1100) << 1
         CMD = self._apply_dp_parity(CMD)
 
-        self._interface.write(CMD.to_bytes(1, byteorder="little"))
+        self.write(CMD.to_bytes(1, byteorder="little"))
         status = 0
         for i in range(3):
-            status += ord(self._interface.read_bit()) << i
+            status += ord(self.read_bit()) << i
         if status == 1:
-            retval = int.from_bytes(self._interface.read(4), byteorder="little")
+            retval = int.from_bytes(self.read(4), byteorder="little")
             self._sync()
             return retval
         elif status == 2:
@@ -115,11 +109,11 @@ class SWD:
         CMD = CMD | (addr & 0b1100) << 1
         CMD = self._apply_dp_parity(CMD)
 
-        self._interface.write(CMD.to_bytes(1, byteorder="little"))
+        self.write(CMD.to_bytes(1, byteorder="little"))
         status = 0
         for i in range(3):
-            status += ord(self._interface.read_bit()) << i
-        self._interface.clocks(2)
+            status += ord(self.read_bit()) << i
+        self.clocks(2)
         if status == 2:
             # When receiving WAIT, retry transaction
             self._sync()
@@ -128,13 +122,13 @@ class SWD:
         if status != 1:
             self._sync()
             raise ValueError(f"Returned status is {hex(status)}")
-        self._interface.write(value.to_bytes(4, byteorder="little"))
+        self.write(value.to_bytes(4, byteorder="little"))
 
         # Send the parity but along with the sync clocks
         if (bin(value).count("1") % 2) == 1:
-            self._interface.write(b"\x01")
+            self.write(b"\x01")
         else:
-            self._interface.write(b"\x00")
+            self.write(b"\x00")
 
     def read_ap(self, address, bank):
         """
@@ -200,3 +194,12 @@ class SWD:
             idr = self.read_ap(ap, 0xFC)
             if idr != 0x0 and idr != 0xFFFFFFFF:
                 print(f"0x{ap:02x}: 0x{idr:08x}")
+
+    def abort(self, flags=0b11111):
+        """
+        Abort AP transaction
+
+        :param flags: Value to write to ABORT register
+        :type flags: int
+        """
+        self.write_dp(0, flags)
