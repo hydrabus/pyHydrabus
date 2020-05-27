@@ -92,6 +92,14 @@ pyHydrabus.aux module
     :undoc-members:
     :show-inheritance:
 
+yHydrabus.nfc module
+----------------------
+
+.. automodule:: pyHydrabus.nfc
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 
 Module contents
 ---------------

@@ -20,6 +20,7 @@ from .smartcard import *
 from .uart import *
 from .utils import *
 from .swd import *
+from .nfc import *
 
 import logging
 
@@ -30,4 +31,4 @@ INPUT = 1
 OUTPUT = 0
 
 name = "pyHydrabus"
-__version__ = "0.2.2"
+__version__ = "0.2.4"
