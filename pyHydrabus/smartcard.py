@@ -58,9 +58,10 @@ class Smartcard(Protocol):
         Write-then-read operation
         https://github.com/hydrabus/hydrafw/wiki/HydraFW-binary-SMARTCARD-mode-guide#write-then-read-operation-0b00000100
 
-        Parameters:
-            data: Data to be sent
-            read_len: number of bytes to read
+        :param data: Data to be sent
+        :type param: bytes
+        :param read_len: number of bytes to read
+        :type read_len: int
         """
         CMD = 0b00000100
         self._hydrabus.write(CMD.to_bytes(1, byteorder="big"))
@@ -87,8 +88,8 @@ class Smartcard(Protocol):
         """
         Write on smartard
 
-        Parameters:
-            data: data to be sent
+        :param data: data to be sent
+        :type param: bytes
         """
         self.write_read(data, read_len=0)
 
@@ -96,8 +97,8 @@ class Smartcard(Protocol):
         """
         Read on smartard
 
-        Parameters:
-            read_len: number of bytes to be read
+        :param read_len: number of bytes to be read
+        :type read_len: int
         """
         return self.write_read(b"", read_len=read_len)
 

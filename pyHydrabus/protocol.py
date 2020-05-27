@@ -78,6 +78,7 @@ class Protocol:
         """
         Return _hydrabus instance to access Hydrabus class functions and serial methods
         from any protocol classes instances
+
         :return: _hydrabus class instance
         """
         return self._hydrabus

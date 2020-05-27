@@ -119,7 +119,6 @@ class RawWire(Protocol):
         Bulk write on Raw-Wire
         https://github.com/hydrabus/hydrafw/wiki/HydraFW-binary-raw-wire-mode-guide#bulk-raw-wire-transfer-0b0001xxxx
 
-        Parameters:
         :param data: Data to be sent
         :type data: bytes
         """
@@ -173,7 +172,6 @@ class RawWire(Protocol):
 
         :param data: data to be sent
         :type data: bytes
-
         :return: Read bytes
         :rtype: bytes
         """

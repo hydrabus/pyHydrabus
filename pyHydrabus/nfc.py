@@ -31,10 +31,8 @@ class NFC(Protocol):
     >>> n.rf = 1
     >>> # Send REQA, get ATQA
     >>> n.write_bits(b'\x26', 7)
-    b'\x04\x00'
     >>> # Send anticol, read ID
     >>> n.write(b'\x93\x20', 0).hex()
-    '3fee983f76'
 
     """
 

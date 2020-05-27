@@ -97,6 +97,7 @@ class Hydrabus:
     def in_waiting(self):
         """
         Return the number of bytes in the receive buffer.
+
         :return: Number of bytes
         :rtype: int
         """
@@ -105,6 +106,7 @@ class Hydrabus:
     def exit_bbio(self):
         """
         Reset Hydrabus to CLI mode
+
         :return: Bool
         """
         if not self.connected:
@@ -118,8 +120,10 @@ class Hydrabus:
 
     def enter_bbio(self):
         """
-        Enter BBIO mode. 
+        Enter BBIO mode.
+
         This should be done prior all further operations
+
         :return: Bool
         """
         if not self.connected:
@@ -138,6 +142,7 @@ class Hydrabus:
     def reset(self):
         """
         Force reset to BBIO main mode
+
         :return: Bool
         """
         timeout = time.time() + 10
@@ -175,6 +180,7 @@ class Hydrabus:
     def timeout(self):
         """
         Serial port read timeout
+
         :return: timeout
         :rtype: int
         """
@@ -184,6 +190,7 @@ class Hydrabus:
     def timeout(self, value):
         """
         Set serial port read timeout
+
         :param value: timeout
         :type value: int
         """
@@ -193,6 +200,7 @@ class Hydrabus:
     def connected(self):
         """
         Check if serial port is opened
+
         :return: Bool
         """
         return self._serialport.is_open
