@@ -166,6 +166,37 @@ class RawWire(Protocol):
             self._logger.error("Error setting config.")
             return False
 
+    def write_bits(self, data=b"", num_bits=0):
+        """
+        Write bits on Raw-Wire bus
+        Bits are sent MSB first.
+        
+        :param data: data to be sent
+        :type data: bytes
+        :param num_bits: number of bits to send
+        :type data: int
+        :return: Read bytes
+        :rtype: bytes
+        """
+        i = 0
+
+        while num_bits > 0:
+            CMD = 0b00110000
+            if num_bits > 8:
+                CMD = CMD | 7
+                num_bits = num_bits - 8
+            else:
+                CMD = CMD | num_bits-1
+                num_bits = 0
+
+            self._hydrabus.write(CMD.to_bytes(1, byteorder="big"))
+            self._hydrabus.write(data[i].to_bytes(1, byteorder="big"))
+            if self._hydrabus.read(1) == b"\x01":
+                return True
+            else:
+                self._logger.error("Error writing bits.")
+                return False
+
     def write(self, data=b""):
         """
         Write on Raw-Wire bus
