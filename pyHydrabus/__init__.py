@@ -21,6 +21,7 @@ from .uart import *
 from .utils import *
 from .swd import *
 from .nfc import *
+from .mmc import *
 
 import logging
 
@@ -31,4 +32,4 @@ INPUT = 1
 OUTPUT = 0
 
 name = "pyHydrabus"
-__version__ = "0.2.5"
+__version__ = "0.2.6"
