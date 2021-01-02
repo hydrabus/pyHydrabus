@@ -34,10 +34,24 @@ class MMC(Protocol):
 
     """
 
+    __MMC_DEFAULT_CONFIG = 0b0
+
     def __init__(self, port=""):
         self._rf = 0
         self._mode = 0
+        self._config = self.__MMC_DEFAULT_CONFIG
         super().__init__(name=b"MMC1", fname="eMMC", mode_byte=b"\x0d", port=port)
+
+    def _configure_port(self):
+        CMD = 0b10000000
+        CMD = CMD | self._config
+
+        self._hydrabus.write(CMD.to_bytes(1, byteorder="big"))
+        if self._hydrabus.read(1) == b"\x01":
+            return True
+        else:
+            self._logger.error("Error setting config.")
+            return False
 
     @property
     def cid(self):
@@ -52,6 +66,34 @@ class MMC(Protocol):
         self._hydrabus.write(CMD.to_bytes(1, byteorder="big"))
         status = int.from_bytes(self._hydrabus.read(1), byteorder="little")
         return self._hydrabus.read(16)
+
+    @property
+    def ext_csd(self):
+        CMD = 0b00000110
+        self._hydrabus.write(CMD.to_bytes(1, byteorder="big"))
+        status = int.from_bytes(self._hydrabus.read(1), byteorder="little")
+        return self._hydrabus.read(512)
+
+    @property
+    def bus_width(self):
+        """
+        Data bus width (1 or 4)
+        """
+        if self._config & 0b1:
+            return 4
+        else:
+            return 1
+
+    @bus_width.setter
+    def bus_width(self, value):
+        if value == 1:
+            self._config = self._config & ~(1)
+        elif value == 4:
+            self._config = self._config | (1)
+        else:
+            print("Invalid value (1 or 4)")
+        self._configure_port()
+
 
     def write(self, data=b"", block_num=0):
         """
