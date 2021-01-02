@@ -271,6 +271,26 @@ class RawWire(Protocol):
             return False
 
     @property
+    def polarity(self):
+        """
+        Clock polarity (0=idle low, 1=idle high)
+        """
+        return (self._config & 0b1)
+
+    @polarity.setter
+    def polarity(self, value):
+        if value == 0:
+            self._config = self._config & ~(1)
+            self._configure_port()
+            return True
+        elif value == 1:
+            self._config = self._config | 1
+            self._configure_port()
+            return True
+        else:
+            self._logger.error("Incorrect value. Must be 0 or 1")
+
+    @property
     def wires(self):
         """
         Raw-Wire mode (2=2-Wire, 3=3-Wire)
