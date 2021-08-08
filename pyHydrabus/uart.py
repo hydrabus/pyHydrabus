@@ -32,10 +32,15 @@ class UART(Protocol):
 
     """
 
+    PARITY_NONE = 0b00
+    PARITY_EVEN = 0b01
+    PARITY_ODD  = 0b10
+
     def __init__(self, port=""):
         self._config = 0b0000
         self._echo = 0
         self._baud = 9600
+        self._parity = self.PARITY_NONE
         super().__init__(name=b"ART1", fname="UART", mode_byte=b"\x03", port=port)
 
     def bulk_write(self, data=b""):
@@ -127,7 +132,29 @@ class UART(Protocol):
             self._baud = value
             return True
         else:
-            self._logger.error("Error setting pin.")
+            self._logger.error("Error setting baudrate.")
+            return False
+
+    @property
+    def parity(self):
+        """
+        Parity
+        """
+        return self._parity
+
+    @parity.setter
+    def parity(self, parity):
+        CMD = 0b10000000
+
+        CMD = CMD | (parity << 2)
+
+        self._hydrabus.write(CMD.to_bytes(1, byteorder="big"))
+
+        if self._hydrabus.read(1) == b"\x01":
+            self._parity = parity
+            return True
+        else:
+            self._logger.error("Error setting parity.")
             return False
 
     def bridge(self):
