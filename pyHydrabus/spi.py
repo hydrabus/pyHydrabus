@@ -22,7 +22,12 @@ class SPI(Protocol):
 
     :example:
 
-    TODO
+    >>> import pyHydrabus
+    >>> s = pyHydrabus.SPI()
+    >>> s.set_speed(s.SPI1_SPEED_10M)
+    >>> s.cs = 0
+    >>> s.bulk_write(b'\x00\x00\x00\x01')
+    >>> s.read(4)
 
     """
 
