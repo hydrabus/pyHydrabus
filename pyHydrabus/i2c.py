@@ -216,6 +216,22 @@ class I2C(Protocol):
             self._logger.error("Error setting speed.")
             return False
 
+    def clock_stretch(self, clock_stretch_val):
+        """
+        Set I2C clock stretching timeout in number of clocks
+
+        :param clock_stretch_val: clock stretching timeout number of clocks (0 disable up to 2^32)
+        """
+        CMD = 0b00100000
+        self._hydrabus.write(CMD.to_bytes(1, byteorder="big"))
+        self._hydrabus.write(clock_stretch_val.to_bytes(4, byteorder="big"))
+        
+        if self._hydrabus.read(1) == b"\x01":
+            return True
+        else:
+            self._logger.error("Error setting clock stretch.")
+            return False
+
     def _configure_port(self):
         CMD = 0b01000000
         CMD = CMD | self._config
