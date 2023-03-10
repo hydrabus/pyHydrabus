@@ -22,6 +22,7 @@ from .utils import *
 from .swd import *
 from .nfc import *
 from .mmc import *
+from .sdio import *
 
 import logging
 
@@ -32,4 +33,4 @@ INPUT = 1
 OUTPUT = 0
 
 name = "pyHydrabus"
-__version__ = "0.2.7"
+__version__ = "0.2.8"
