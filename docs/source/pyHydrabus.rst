@@ -100,6 +100,22 @@ pyHydrabus.nfc module
     :undoc-members:
     :show-inheritance:
 
+pyHydrabus.mmc module
+----------------------
+
+.. automodule:: pyHydrabus.mmc
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pyHydrabus.sdio module
+----------------------
+
+.. automodule:: pyHydrabus.sdio
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 
 Module contents
 ---------------
