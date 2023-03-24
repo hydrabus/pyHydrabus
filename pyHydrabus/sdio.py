@@ -57,10 +57,10 @@ class SDIO(Protocol):
 
     """
 
-    __MMC_DEFAULT_CONFIG = 0b0
+    __SDIO_DEFAULT_CONFIG = 0b0
 
     def __init__(self, port=""):
-        self._config = self.__MMC_DEFAULT_CONFIG
+        self._config = self.__SDIO_DEFAULT_CONFIG
         super().__init__(name=b"SDI1", fname="SDIO", mode_byte=b"\x0e", port=port)
 
     def _configure_port(self):
@@ -73,6 +73,26 @@ class SDIO(Protocol):
         else:
             self._logger.error("Error setting config.")
             return False
+
+    @property
+    def bus_width(self):
+        """
+        Data bus width (1 or 4)
+        """
+        if self._config & 0b1:
+            return 4
+        else:
+            return 1
+
+    @bus_width.setter
+    def bus_width(self, value):
+        if value == 1:
+            self._config = self._config & ~(1)
+        elif value == 4:
+            self._config = self._config | (1)
+        else:
+            print("Invalid value (1 or 4)")
+        self._configure_port()
 
     def send_no(self, cmd_id, cmd_arg):
         """
