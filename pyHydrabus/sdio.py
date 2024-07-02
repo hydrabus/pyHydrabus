@@ -94,6 +94,28 @@ class SDIO(Protocol):
             print("Invalid value (1 or 4)")
         self._configure_port()
 
+    @property
+    def frequency(self):
+        """
+        Select SDIO clock frequency
+            0: Slow (400kHz)
+            1: Fast (24MHz)
+        """
+        if self._config & 0b10:
+            return 1
+        else:
+            return 0
+
+    @frequency.setter
+    def frequency(self, value):
+        if value == 0:
+            self._config = self._config & ~(1<<1)
+        elif value == 1:
+            self._config = self._config | (1<<1)
+        else:
+            print("Invalid value (0 or 1)")
+        self._configure_port()
+
     def send_no(self, cmd_id, cmd_arg):
         """
         Send SDIO command with no reply from card
