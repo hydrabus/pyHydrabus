@@ -31,7 +31,7 @@ class SPI(Protocol):
 
     """
 
-    __SPI_DEFAULT_CONFIG = 0b010
+    __SPI_DEFAULT_CONFIG = 0b011
 
     SPI1_SPEED_320K = 0b000
     SPI1_SPEED_650K = 0b001
