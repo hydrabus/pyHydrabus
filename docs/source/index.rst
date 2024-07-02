@@ -7,4 +7,6 @@ Welcome to pyHydrabus's documentation!
 ======================================
 
 .. toctree::
+    :maxdepth: 4
+
     pyHydrabus.rst
