@@ -56,6 +56,27 @@ class SWD(RawWire):
         )
         self._sync()
 
+    def multidrop_init(self, addr=0):
+        """
+        Initialize a multidrop bus and select the DP at address
+
+        :param addr: DP register address
+        :type addr: int
+        """
+
+        self.bus_init()
+
+        # Send dormant to active command per ADIv6
+        self.write(b"\x92\xf3\x09\x62\x95\x2d\x85\x86\xe9\xaf\xdd\xe3\xa2\x0e\xbc\x19")
+        self.write_bits(b'\x00', 4)
+        # Protocol activation code = SWD
+        self.write(b"\x1a")
+        # Bus reset
+        self.write(b"\xff"*7)
+        self._sync()
+        # Finally, select DP
+        self.write_dp(0xc, addr, discard_status=True)
+
     def read_dp(self, addr, to_ap=0):
         """
         Read a register from DP
@@ -67,6 +88,7 @@ class SWD(RawWire):
         :rtype: int
 
         :example:
+
         >>> # read RDBUFF
         >>> swd.read_dp(0xc)
         """
@@ -102,6 +124,7 @@ class SWD(RawWire):
         :type value: int
 
         :example:
+
         >>> write_dp(4, 0x50000000)
         """
         CMD = 0x81
@@ -146,6 +169,7 @@ class SWD(RawWire):
         :rtype: int
 
         :example:
+
         >>> # Read AP IDR
         >>> read_ap(0, 0xfc)
 
@@ -174,6 +198,7 @@ class SWD(RawWire):
         :type value: int
 
         :example:
+
         >>> write_ap(0, 0x4, 0x20000000)
         """
 
