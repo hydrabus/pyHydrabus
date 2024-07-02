@@ -75,7 +75,7 @@ class SWD(RawWire):
         self.write(b"\xff"*7)
         self._sync()
         # Finally, select DP
-        self.write_dp(0xc, addr, discard_status=True)
+        self.write_dp(0xc, addr, ignore_status=True)
 
     def read_dp(self, addr, to_ap=0):
         """
