@@ -92,7 +92,7 @@ class SWD(RawWire):
             self._sync()
             raise ValueError(f"Returned status is {hex(status)}")
 
-    def write_dp(self, addr, value, to_ap=0):
+    def write_dp(self, addr, value, to_ap=0, ignore_status=False):
         """
         Write to DP register
 
@@ -114,14 +114,17 @@ class SWD(RawWire):
         for i in range(3):
             status += ord(self.read_bit()) << i
         self.clocks(2)
-        if status == 2:
-            # When receiving WAIT, retry transaction
-            self._sync()
-            self.write_dp(0, 0x0000001F)
-            return self.write_dp(addr, value, to_ap)
-        if status != 1:
-            self._sync()
-            raise ValueError(f"Returned status is {hex(status)}")
+
+        if ignore_status == False:
+            if status == 2:
+                # When receiving WAIT, retry transaction
+                self._sync()
+                self.write_dp(0, 0x0000001F)
+                return self.write_dp(addr, value, to_ap)
+            if status != 1:
+                self._sync()
+                raise ValueError(f"Returned status is {hex(status)}")
+
         self.write(value.to_bytes(4, byteorder="little"))
 
         # Send the parity but along with the sync clocks
