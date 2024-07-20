@@ -1,0 +1,35 @@
+[project]
+name = "pyHydrabus"
+dynamic = ["version"]
+dependencies = [
+  "pyserial",
+]
+authors = [
+  {name = "Baldanos"},
+]
+maintainers = [
+  {name = "Baldanos"}
+]
+description = "Hydrabus BBIO python bindings"
+readme = "README.md"
+license = {file = "LICENSE"}
+keywords = [ "Hydrabus" ]
+classifiers=[
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://www.hydrabus.com"
+Documentation = "https://pyhydrabus.readthedocs.io"
+Repository = "https://github.com/hydrabus/pyHydrabus"
+
+
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = [
+    "setuptools",
+    "pyserial",
+]
+
