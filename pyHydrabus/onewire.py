@@ -118,3 +118,33 @@ class OneWire(Protocol):
         else:
             self._config = self._config | (1 << 2)
         self._configure_port()
+
+    def swio_init(self):
+        self._config = 0b1000
+        self._configure_port()
+
+    def swio_read_reg(self, address):
+        """
+        Read a debug register
+        """
+        CMD = 0b00100000
+        self._hydrabus.write(CMD.to_bytes(1, byteorder="little"))
+        self._hydrabus.write(address.to_bytes(1, byteorder="little"))
+
+        return int.from_bytes(self._hydrabus.read(4), byteorder="little")
+
+    def swio_write_reg(self, address, value):
+        """
+        Write a debug register
+        """
+        CMD = 0b00110000
+        self._hydrabus.write(CMD.to_bytes(1, byteorder="little"))
+        self._hydrabus.write(address.to_bytes(1, byteorder="little"))
+        self._hydrabus.write(value.to_bytes(4, byteorder="little"))
+
+        if self._hydrabus.read(1) == b"\x01":
+            return True
+        else:
+            self._logger.error("Unknown error.")
+            return False
+        
